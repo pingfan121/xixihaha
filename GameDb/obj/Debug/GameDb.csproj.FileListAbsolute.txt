@@ -1,0 +1,6 @@
+E:\case\bin\Debug\config\log_config.conf
+E:\case\bin\Debug\GameDb.dll
+E:\case\bin\Debug\GameDb.pdb
+E:\case\server\GameDb\obj\Debug\GameDb.dll
+E:\case\server\GameDb\obj\Debug\GameDb.pdb
+E:\case\server\GameDb\obj\Debug\GameDb.csprojResolveAssemblyReference.cache
