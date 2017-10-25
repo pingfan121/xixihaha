@@ -26,5 +26,10 @@ namespace test.Controllers
 
             return View();
         }
+
+        public ActionResult Ha()
+        {
+            return View();
+        }
     }
 }
