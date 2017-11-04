@@ -1,6 +1,135 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    Layout = null;
 }
-<h2>Index</h2>
-<p>Hello from our View Template!</p>
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>2048</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+   
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    @Styles.Render("~/Content/css")
+</head>
+
+@*<body onload="start()" onresize="redraw()">
+        <div class="col-md-12">
+            <button>测试</button>
+            <button>测试</button>
+            <button>测试</button>
+            <button>测试</button>
+        </div>
+        <div class="col-md-12">
+            <button>测试</button>
+            <button>测试</button>
+            <button>测试</button>
+            <button>测试</button>
+        </div>
+        <div style=" height: 100%;">
+            <canvas id="canvs1" style=" height: 100%; "></canvas>
+        </div>
+    </body>*@
+
+
+<body onload="start()" onresize="redraw()">
+    <div class="container">
+
+        <div class="row top-m" id="anniu">
+            <div class="col-sm-3 column">
+                <button type="button" class="btn btn-info btn-block">按钮</button>
+            </div>
+            <div class="col-sm-3 column">
+                <button type="button" class="btn btn-info btn-block">按钮</button>
+            </div>
+            <div class="col-sm-3 column">
+                <button type="button" class="btn btn-info btn-block">按钮</button>
+            </div>
+            <div class="col-sm-3 column">
+                <button type="button" class="btn btn-info btn-block">按钮</button>
+            </div>
+        </div>
+
+        <div class="row text-center  top-m">
+            <div class="col-sm-6 column bg-info">
+                <p>
+                    当前分数
+                </p>
+                <p>
+                    1222
+                </p>
+            </div>
+            <div class="col-sm-6 column bg-info">
+                <p>
+                    最高分数
+                </p>
+                <p>
+                    1222
+                </p>
+            </div>
+        </div>
+        <div class="row  top-m">
+            <canvas id="canvs1"></canvas>
+        </div>
+    </div>
+</body>
+
+<script src="~/scripts/custom/datamg.js">
+
+</script>
+
+<script src="~/scripts/custom/logic.js">
+
+</script>
+<script src="~/scripts/custom/game.js">
+
+</script>
+
+<script>
+
+    document.documentElement.style.overflow = 'hidden';
+
+    document.body.style.overflow = 'hidden';//手机版设置这个
+
+    function start() {
+        var gWinWidth = document.documentElement.clientWidth - document.documentElement.offsetLeft * 2;
+        var gWinHeight = document.documentElement.clientHeight - document.documentElement.offsetTop * 2;
+
+        var len = gWinWidth;
+
+        if (len > gWinHeight) {
+            len = gWinHeight;
+        }
+
+        var mycanvas = document.getElementById("canvs1");
+        mycanvas.width = len;
+        mycanvas.height = len;
+
+        onLoad(mycanvas);
+        mycanvas.addEventListener('touchstart', touchstart);
+        mycanvas.addEventListener('touchend', touchend);
+
+    }
+
+    function redraw() {
+        var gWinWidth = document.documentElement.clientWidth - document.documentElement.offsetLeft * 2;
+        var gWinHeight = document.documentElement.clientHeight - document.documentElement.offsetTop * 2;
+
+        var len = gWinWidth;
+
+        if (len > gWinHeight) {
+            len = gWinHeight;
+        }
+
+        var aa = document.getElementById("anniu");
+
+        var mycanvas = document.getElementById("canvs1");
+        mycanvas.width = aa.clientWidth;
+        mycanvas.height = aa.clientWidth;
+
+        onUpdate();
+    }
+
+</script>
+
 
