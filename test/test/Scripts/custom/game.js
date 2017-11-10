@@ -1,17 +1,12 @@
 
-
-/**
- * 页面的初始数据
- */
-
-
     var data = {
         count: 4,
+        grids:[],
         colors: {},
-        width: 0,
         max_score: 0,
         curr_score: 0,
         point: {}
+
     }
 
     var canvas1;
@@ -22,12 +17,8 @@
     function onLoad(canvas)
     {
         canvas1 = canvas;
-
-
         initColor();
         onStart();
-
-        console.log("测试", "测试出来");
     }
 
     function initColor() {
@@ -67,104 +58,122 @@
         colors.c1073741824 = "#87843b";
     }
 
-    function touchstart(event) {
-        data.point.x = event.touches[0].pageX;
-        data.point.y = event.touches[0].pageY;
+//开始的点
+    var s_point = {};
+    function startPoint(point)
+    {
+        s_point = point;
 
     }
 
-    function touchend(event) {
-        var end = {};
+    var e_point = {};
 
-        end.x = event.touches[0].pageX;
-        end.y = event.touches[0].pageY;
+    function endPoint(point)
+    {
+        e_point = point;
 
-        var res = OperGame(data.point, end);
-
-        if (res == 0)  //游戏结束
-        {
-
-        }
-        else if (res == 1)//合并了
-        {
-            playSound();
-        }
-        else  //只是移动
-        {
-            playSound();
-        }
-
-        console.error("结果:" + res);
-
-        onUpdate();
-
+        operGame(s_point, e_point);
     }
-    function onRestart() {
-
+   
+    function onRestart()
+    {
         var grids = [];
 
         if (data.count == 4) {
-            wx.setStorageSync("grids_4", grids);
+            setarrdata("grids_4", grids);
         }
         else {
-            wx.setStorageSync("grids_6", grids);
+            setarrdata("grids_6", grids);
         }
-
 
         onStart();
     }
 
-    function onStart() {
-        var max = "";
-        var grids = [];
-
-        if (data.count == 4) {
-            max = getdata('max_4');
-            grids = getdata('grids_4');
+    function onStart()
+    {
+        if (data.count == 4)
+        {
+            data.max_score = getstrdata('max_4');
+            data.grids = getarrdata('grids_4');
         }
-        else {
-            max = getdata('max_6');
-            grids = getdata('grids_6');
-        }
-
-        console.error("最大分数" + max);
-
-        if (max == undefined || max == "") {
-            max = 0;
+        else
+        {
+            data.max_score = getstrdata('max_6');
+            data.grids = getarrdata('grids_6');
         }
 
-        if (grids == undefined || grids == null || grids == '') {
-            grids = [];
+        if (data.max_score == undefined || data.max_score == "") {
+            data.max_score = 0;
+        }
+
+        if (data.grids == undefined || data.grids == null || data.grids == '') {
+            data.grids = [];
         }
         //读取数据
-        init2(data.count, grids, max);
+        init2(data.count, data.grids);
+
         onUpdate();
     }
-    function onResetCount() {
-        if (data.count == 4) {
-            setData({ count: 6 });
+    function operGame(src, tag) {
+        var dir = getdirection(src, tag)
+
+        var oper = false;
+
+        if (dir == "up") {
+            oper = up_move();
         }
-        else {
-            setData({ count: 4 });
+        if (dir == "down") {
+            oper = down_move();
+        }
+        if (dir == "left") {
+            oper = left_move();
+        }
+        if (dir == "right") {
+            oper = right_move();
         }
 
+        if (oper == true) {
+            var merge_flag = haveMerge();
+
+            if (merge_flag == true)
+            {
+                playsound(true);
+                cleanMerge();
+            }
+            else {
+                playsound(false);
+            }
+
+            addGrid();
+
+        }
+        onUpdate();
+
+        if (isOver() == true) {
+            alert("游戏结束");
+        }
+    }
+    function onResetCount()
+    {
+        if (data.count == 4)
+        {
+            data.count = 6;
+        }
+        else
+        {
+            data.count = 4;
+        }
 
         onStart();
-
     }
-
-    function playSound() {
-        //wx.playBackgroundAudio('../../../src/move.wav');
+    function getCount()
+    {
+        return data.count;
     }
 
     function onUpdate()
     {
         onDraw();
-
-        //setData({
-        //    curr_score: getcurrscore(),
-        //    max_score: getmaxscore()
-        //})
 
         var s_max = "";
         var s_grids = "";
@@ -178,37 +187,42 @@
             s_grids = "grids_6";
         }
 
-        var grids = getgrids();
+        var grids = data.grids;
 
-        var score = getmaxscore();
+        data.curr_score = getCurrScore();
+
+        if (data.curr_score > data.max_score)
+        {
+            data.max_score = data.curr_score;
+        }
 
         //保存最大分
-        setdata(s_max, score);
+        setstrdata(s_max, data.max_score);
         //保存格子数据
-        setdata(s_grids, grids);
+        setarrdata(s_grids, grids);
+
+        //更新界面分数
+        updateScore();
+
     }
     //画图
     function onDraw()
     {
         var canvas = canvas1.getContext('2d');
+      
+     
        
-        var gap = 5;
-
-        var count = getcount();
+        var count =data.count;
         var width = canvas1.width;
-        console.error("------" + width);
+
+        var gap = width/100;
 
         var grid_width = (width - (count + 1) * gap) / count;
 
         canvas.fillStyle = "#72777b";
         canvas.fillRect(0, 0, width, width);
 
-
-        console.error("格子宽度" + width);
-        console.error("格子宽度:" + grid_width);
-
-
-        var grids = getgrids();
+        var grids = data.grids;
 
         for (var i = 0; i < grids.length; i++) {
             for (var k = 0; k < grids[i].length; k++) {
@@ -225,23 +239,25 @@
                 canvas.fillRect(startx, starty, grid_width, grid_width);
 
                 if (grid.num != 0) {
-                    if (grids[i][k].num < 100000) {
-                        //  canvas.setFontSize();
+                    if (grids[i][k].num < 100000)
+                    {
                         var size = grid_width / 3;
-
                         canvas.font=size+"px Arial";
                     }
-                    else if (grids[i][k].num < 10000000) {
-                        //  canvas.setFontSize(grid_width / 4);
-                  //      canvas.font.fontsize = grid_width / 4;
+                    else if (grids[i][k].num < 10000000)
+                    {
+                        var size = grid_width / 4;
+                        canvas.font = size + "px Arial";
                     }
-                    else if (grids[i][k].num < 100000000) {
-                        //  canvas.setFontSize(grid_width / 5);
-                  //      canvas.font.fontsize = grid_width / 5;
+                    else if (grids[i][k].num < 100000000)
+                    {
+                        var size = grid_width / 5;
+                        canvas.font = size + "px Arial";
                     }
-                    else if (grids[i][k].num < 2100000000) {
-                        // canvas.setFontSize(grid_width / 6);
-                //        canvas.font.fontsize = grid_width / 6;
+                    else if (grids[i][k].num < 2100000000)
+                    {
+                        var size = grid_width / 6;
+                        canvas.font = size + "px Arial";
                     }
 
                     canvas.fillStyle="#000000";
@@ -253,4 +269,30 @@
             }
         }
 
+    }
+
+    //更新分数
+    function updateScore()
+    {
+        document.getElementById("cur_score").innerHTML = data.curr_score;
+        document.getElementById("max_score").innerHTML = data.max_score;
+    }
+
+//播放声音
+    var soundflag=true;
+
+    function playsound(merge)
+    {
+        var myaudio = document.getElementById("myaudio");
+
+        if (soundflag == true) {
+            if (merge == true) {
+                myaudio.src = "../sound/merge.wav";
+            }
+            else {
+                myaudio.src = "../sound/move.wav";
+            }
+
+            myaudio.play();
+        }
     }

@@ -1,46 +1,28 @@
 
 
-var count0;
 var grids;
-var curr_score;
-var max_score;
-
-function init2(num, init_grids, max) {
-    count = num;
-    max_score = max;
-
+function init2(num,init_grids)
+{
     grids = init_grids;
 
     var flag = false;
 
-    if (grids.length == 0) {
-        for (var i = 0; i < count; i++) {
+    if (grids.length == 0)
+    {
+        for (var i = 0; i < num; i++)
+        {
             grids[i] = new Array();
 
-            for (var k = 0; k < count; k++) {
+            for (var k = 0; k < num; k++)
+            {
                 var o = new Object();
-
                 o.num = 0;
-
                 o.merge = false;
                 grids[i][k] = o;
             }
         }
-        flag = true;
-    }
-    startGame(flag);
-}
-
-function startGame(flag) {
-
-    if (flag == true) {
         addGrid();
         addGrid();
-    }
-    curr_score = getCurrScore();
-
-    if (curr_score > max_score) {
-        max_score = curr_score;
     }
 }
 
@@ -218,9 +200,8 @@ function addGrid() {
 }
 
 //检测游戏是否结束
-function isOver() {
-    //先检测是否有空格子
-
+function isOver()
+{
     for (var i = 0; i < grids.length; i++) {
         for (var k = 0; k < grids[i].length; k++) {
             if (grids[i][k].num == 0) {
@@ -250,66 +231,32 @@ function isOver() {
     return true;
 }
 
-//设置方向
-function OperGame(src, tag) {
 
-
-    var dir = getdirection(src, tag)
-
-    var oper = false;
-
-    if (dir == "up") {
-        oper = up_move();
-    }
-    if (dir == "down") {
-        oper = down_move();
-    }
-    if (dir == "left") {
-        oper = left_move();
-    }
-    if (dir == "right") {
-        oper = right_move();
-    }
-
-    var merge_flag = false;
-
-    for (var i = 0; i < grids.length; i++) {
-        for (var k = 0; k < grids[i].length; k++) {
-            if (merge_flag == false) {
-                if (grids[i][k].merge == true) {
-                    merge_flag = true;
-                }
+//是否有合并
+function haveMerge()
+{
+    for (var i = 0; i < grids.length; i++)
+    {
+        for (var k = 0; k < grids[i].length; k++)
+        {
+            if (grids[i][k].merge == true)
+            {
+                return true;
             }
+        }
+    }
+    return false
+}
+//清理合并标志
+function cleanMerge()
+{
+    for (var i = 0; i < grids.length; i++)
+    {
+        for (var k = 0; k < grids[i].length; k++)
+        {
             grids[i][k].merge = false;
         }
     }
-
-    if (oper == true) {
-        //增加格子
-        addGrid();
-        //判断输赢
-    }
-
-
-
-    curr_score = getCurrScore();
-
-    if (curr_score > max_score) {
-        max_score = curr_score;
-    }
-
-    if (isOver() == true) {
-        return 0;
-    }
-
-    if (merge_flag == true) {
-        return 1;
-    }
-    else {
-        return 2;
-    }
-
-     saveData();
 }
 
 function getCurrScore() {
@@ -324,33 +271,14 @@ function getCurrScore() {
     return curr;
 }
 
-function saveData() 
-{
-    var sb = "";
 
-     for (var i = 0; i < grids.length; i++)
-     {
-       for (var k = 0; k < grids[i].length; k++)
-       {
-           sb += grids[i][k].num;
-           sb += ",";
-       }
-     }
-     setdata(num, sb);
-     setdata(num + "max", max_socre);
-}
-
- function restartGame() {
-   DataAccess.set2048data(num, "");
-   startGame();
- }
-
-//     public void setSoundFlag(boolean flag)
+//public void setSoundFlag(boolean flag)
 // {
 //   sound_flag = flag;
 // }
 
-function getdirection(orgPos, dirPos) {
+ function getdirection(orgPos, dirPos)
+ {
     var TTpos = {};
 
     TTpos.x = dirPos.x - orgPos.x;
@@ -399,28 +327,3 @@ function getdirection(orgPos, dirPos) {
     return "";
 
 }
-
-function getcount() {
-    return count;
-}
-function getgrids() {
-
-    return grids;
-}
-
-function getcurrscore() {
-    return curr_score;
-}
-
-function getmaxscore() {
-    return max_score;
-}
-
-//module.exports = {
-//  init: init,
-//  getgrids: getgrids,
-//  getcount: getcount,
-//  getcurrscore: getcurrscore,
-//  getmaxscore: getmaxscore,
-//  OperGame: OperGame,
-//}

@@ -15,6 +15,10 @@ namespace test.Controllers
             return View();
         }
 
+        public ActionResult About()
+        {
+            return View();
+        }
         //
         // GET: /HelloWorld/Welcome/
 //         public string Welcome()
