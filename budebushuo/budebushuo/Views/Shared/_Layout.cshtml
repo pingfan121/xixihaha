@@ -4,13 +4,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - 我的 ASP.NET 应用程序</title>
+    <title>不得不说的那些猫事</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
+   
+    <div style="z-index:9999;position: fixed; bottom:10px;right:10px;">
+        <img width="40px" height="40px" src="../../img/yuan.png" style="opacity:0.2;" onclick="" />
+    </div>
+
+ 
+
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container"  style="display:none;">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
@@ -41,3 +48,12 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
+<script>
+
+    function onYuanClick()
+    {
+
+    }
+
+</script>
