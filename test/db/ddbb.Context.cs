@@ -12,12 +12,29 @@ namespace db
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+    using System.Runtime.Remoting.Messaging;
+
     public partial class testEntities : DbContext
     {
         public testEntities()
             : base("name=testEntities")
         {
+        }
+
+        public static testEntities GetDbContext
+        {
+            get
+            {
+                object efDbContext = CallContext.GetData("DbContext");
+                if (efDbContext == null)
+                {
+                    efDbContext = new testEntities();
+                    //存入到这个线程缓存中
+                    CallContext.SetData("DbContext", efDbContext);
+                }
+                return efDbContext as testEntities;
+            }
+          
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
